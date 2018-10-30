@@ -10,6 +10,11 @@ namespace DormGrapple
     {
         static void Main(string[] args)
         {
+            Field field = new Field();
+
+            field.Show();
+
+            Console.ReadKey();
         }
     }
 }

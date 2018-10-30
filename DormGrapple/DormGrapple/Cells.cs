@@ -6,49 +6,49 @@ using System.Threading.Tasks;
 
 namespace DormGrapple
 {
-    public interface Cell
+    public interface ICell
     {
         int Damage { get; }
         double Percentage { get; }
         int Own { get; }
     }
 
-    public class Apple : Cell
+    public class Apple : ICell
     {
         public int Damage { get => 3; }
         public double Percentage { get => 0.4; }
         public int Own { get => 0; }
     }
 
-    public class Chip : Cell
+    public class Chip : ICell
     {
         public int Damage { get => 5; }
         public double Percentage { get => 0.35; }
         public int Own { get => 0; }
     }
 
-    public class Bacterium : Cell
+    public class Bacterium : ICell
     {
         public int Damage { get => 7; }
         public double Percentage { get => 0.25; }
         public int Own { get => 0; }
     }
 
-    public class Slipper : Cell
+    public class Slipper : ICell
     {
         public int Damage { get => 3; }
         public double Percentage { get => 0.4; }
         public int Own { get => 1; }
     }
 
-    public class CockroachTrap : Cell
+    public class CockroachTrap : ICell
     {
         public int Damage { get => 5; }
         public double Percentage { get => 0.35; }
         public int Own { get => 1; }
     }
 
-    public class Poison : Cell
+    public class Poison : ICell
     {
         public int Damage { get => 7; }
         public double Percentage { get => 0.25; }
