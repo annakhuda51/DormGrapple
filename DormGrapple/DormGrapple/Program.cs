@@ -11,7 +11,7 @@ namespace DormGrapple
         static void Main(string[] args)
         {
             Field field = new Field();
-
+            field.SetField();
             field.Show();
 
             Console.ReadKey();
