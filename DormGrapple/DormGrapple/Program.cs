@@ -9,22 +9,16 @@ namespace DormGrapple
     class Program
     {
         static void Main(string[] args)
-        {
-            Field field = new Field(20);
-            bool test = false;
-            for (int i = 0; i < 10000; i++)
+        {            
+            Field field = new Field(10);
+            
+            field.Show();
+            Console.WriteLine(field.HasCombinations());
+            var list = field.AllCombinations();
+            foreach (var elem in list)
             {
-                field.SetField();
-                if (field.HasCombinations())
-                {
-                    test = true;
-                }
+                Console.WriteLine(elem);
             }
-
-            Field field1 = new Field(3);
-            field1.Show();
-            Console.WriteLine(field1.HasCombinations());
-            Console.WriteLine(test);
             Console.ReadKey();
         }
     }

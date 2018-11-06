@@ -15,6 +15,7 @@ namespace DormGrapple
 
         public Field(int size = 9)
         {
+            CellsFactory factory = new CellsFactory();
             cells = new List<List<ICell>>(size);
 
             for (int i = 0; i < size; i++)
@@ -22,7 +23,7 @@ namespace DormGrapple
                 cells.Add(new List<ICell>(size));
                 for (int j = 0; j < size; j++)
                 {
-                    cells[i].Add(new Cell());
+                    cells[i].Add(factory.createCell(new List<CellType>()));
                 }
             }
 
@@ -74,7 +75,7 @@ namespace DormGrapple
                 }
 
                 Console.WriteLine();
-                
+
             }
 
             Console.BackgroundColor = ConsoleColor.Black;
@@ -144,13 +145,15 @@ namespace DormGrapple
                 list.Add(cells[i][j + 1].Type);
             }
 
-            if (i < size - 1 && i > 0 && cells[i - 1][j].Type != CellType.Default && cells[i + 1][j].Type != CellType.Default &&
+            if (i < size - 1 && i > 0 && cells[i - 1][j].Type != CellType.Default &&
+                cells[i + 1][j].Type != CellType.Default &&
                 cells[i - 1][j].Type == cells[i + 1][j].Type)
             {
                 list.Add(cells[i + 1][j].Type);
             }
 
-            if (j < size - 1 && j > 0 && cells[i][j - 1].Type != CellType.Default && cells[i][j + 1].Type != CellType.Default &&
+            if (j < size - 1 && j > 0 && cells[i][j - 1].Type != CellType.Default &&
+                cells[i][j + 1].Type != CellType.Default &&
                 cells[i][j - 1].Type == cells[i][j + 1].Type)
             {
                 list.Add(cells[i][j + 1].Type);
@@ -293,6 +296,121 @@ namespace DormGrapple
             }
 
             return false;
+        }
+
+        public List<Combination> AllCombinations()
+        {
+            List<Combination> combinations = new List<Combination>();
+            int index = 0;
+            CellType previous = CellType.Default;
+            int count = 0;
+            Combination currCombination = new Combination();
+
+            for (int i = 0; i < size; i++)
+            {
+                for (int j = 0; j < size; j++)
+                {
+                    index = i;
+                    previous = cells[i][j].Type;
+                    count = 1;
+                    currCombination = new Combination();
+                    currCombination.combination.Add(new Position(i, j));
+
+                    while (++index < size && previous == cells[index][j].Type)
+                    {
+                        currCombination.combination.Add(new Position(index, j));
+                        count++;
+                    }
+
+                    if (count > 2 && !combinations.Contains(currCombination))
+                    {
+                        combinations.Add(currCombination);
+                    }
+
+                    index = i;
+                    previous = cells[i][j].Type;
+                    count = 1;
+                    currCombination = new Combination();
+                    currCombination.combination.Add(new Position(i, j));
+
+                    while (--index > -1 && previous == cells[index][j].Type)
+                    {
+                        currCombination.combination.Add(new Position(index, j));
+                        count++;
+                    }
+
+                    if (count > 2 && !combinations.Contains(currCombination))
+                    {
+                        combinations.Add(currCombination);
+                    }
+
+                    index = j;
+                    previous = cells[i][j].Type;
+                    count = 1;
+                    currCombination = new Combination();
+                    currCombination.combination.Add(new Position(i, j));
+
+                    while (++index < size && previous == cells[i][index].Type)
+                    {
+                        currCombination.combination.Add(new Position(i, index));
+                        count++;
+                    }
+
+                    if (count > 2 && !combinations.Contains(currCombination))
+                    {
+                        combinations.Add(currCombination);
+                    }
+
+                    index = j;
+                    previous = cells[i][j].Type;
+                    count = 1;
+                    currCombination = new Combination();
+                    currCombination.combination.Add(new Position(i, j));
+
+                    while (--index > -1 && previous == cells[i][index].Type)
+                    {
+                        currCombination.combination.Add(new Position(i, index));
+                        count++;
+                    }
+
+                    if (count > 2 && !combinations.Contains(currCombination))
+                    {
+                        combinations.Add(currCombination);
+                    }
+                }
+            }
+
+            return ConcatCombinations(combinations);
+        }
+
+        public List<Combination> ConcatCombinations(List<Combination> combinations)
+        {
+            for (int i = 0; i < combinations.Count; i++)
+            {
+                for (int j = 0; j < combinations.Count; j++)
+                {
+                    if (combinations[i].combination.Intersect(combinations[j].combination).Count() != 0 && i != j)
+                    {
+                        combinations[i].combination = combinations[i].combination.Concat(combinations[j].combination)
+                            .Distinct().ToList();
+                        combinations[j].combination = new List<Position>();
+                    }
+                }
+            }
+
+            for (int i = 0; i < combinations.Count;)
+            {
+                if (combinations[i].Length == 0)
+                {
+                    combinations.RemoveAt(i);
+                }
+                else
+                {
+                    i++;
+                }
+            }
+
+            return combinations;
         }
     }
 }
