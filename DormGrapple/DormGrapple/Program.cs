@@ -13,7 +13,7 @@ namespace DormGrapple
             Field field = new Field();
             field.SetField();
             field.Show();
-
+            Console.WriteLine(field.hasMoves());
             Console.ReadKey();
         }
     }

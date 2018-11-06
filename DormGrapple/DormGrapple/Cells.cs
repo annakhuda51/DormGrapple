@@ -104,13 +104,15 @@ namespace DormGrapple
 
     public class CellsFactory
     {
+
+        Random rand = new Random();
+
         public ICell createCell(List<CellType> disables)
         {
             ICell cell;
-            Random rand = new Random();
             do
             {
-                int type = rand.Next(0, 5);
+                int type = rand.Next(0, 6);
                 switch (type)
                 {
                     case 0:

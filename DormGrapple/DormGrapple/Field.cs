@@ -63,6 +63,10 @@ namespace DormGrapple
                     {
                         Console.BackgroundColor = ConsoleColor.Cyan;
                     }
+                    if (cells[i][j] is Cell)
+                    {
+                        Console.BackgroundColor = ConsoleColor.Red;
+                    }
                     Console.Write("  ");
                 }
                 Console.WriteLine();
@@ -73,7 +77,7 @@ namespace DormGrapple
         {
             CellsFactory factory = new CellsFactory();
 
-            for (int i = 1; i < size/2; i++)
+            for (int i = 1; i <= size/2; i++)
             {
                 for (int j = i-1; j < size-i+1; j++)
                 {
@@ -96,17 +100,86 @@ namespace DormGrapple
                     cells[j][i-1] = cell;
                 }
             }
+            if(size%2==1) cells[size/2][size / 2] = factory.createCell(checkSell(size / 2, size / 2));
         }
 
         public List<CellType> checkSell(int i, int j)
         {
             List<CellType> list = new List<CellType>();
 
-            if (i > 2 && cells[i - 1][j].type != CellType.Default && cells[i - 2][j].type != CellType.Default && cells[i - 1][j].type == cells[i - 2][j].type) list.Add(cells[i - 1][j].type);
-            if (j > 2 && cells[i][j - 1].type != CellType.Default && cells[i][j-2].type != CellType.Default && cells[i][j - 1].type == cells[i][j-2].type) list.Add(cells[i][j - 1].type);
+
+            if (i > 1 && cells[i - 1][j].type != CellType.Default && cells[i - 2][j].type != CellType.Default && cells[i - 1][j].type == cells[i - 2][j].type) list.Add(cells[i - 1][j].type);
+            if (j > 1 && cells[i][j - 1].type != CellType.Default && cells[i][j-2].type != CellType.Default && cells[i][j - 1].type == cells[i][j-2].type) list.Add(cells[i][j - 1].type);
             if (i < size - 2 && cells[i + 1][j].type!= CellType.Default && cells[i + 2][j].type != CellType.Default && cells[i + 1][j].type == cells[i + 2][j].type) list.Add(cells[i + 1][j].type);
             if (j < size - 2 && cells[i][j + 1].type!= CellType.Default && cells[i][j + 2].type != CellType.Default && cells[i][j + 1].type == cells[i][j + 2].type) list.Add(cells[i][j + 1].type);
             return list;
+        }
+
+        public bool hasMoves()
+        {
+            for (int i = 0; i < size; i++)
+            {
+                int count = 0;
+                CellType previous = CellType.Default;
+                for (int j = 0; j < size; j++)
+                {
+                    if(cells[i][j].type == previous)
+                    {
+                        count = 2;
+                    } else
+                    {
+                        count = 1;
+                    }
+                    previous = cells[i][j].type;
+
+                    if(count == 2)
+                    {
+                        if (j > 1)
+                        {
+                            if (i > 0 && cells[i - 1][j - 2].type == previous) return true;
+                            if (i < size-1 && cells[i + 1][j - 2].type == previous) return true;
+                            if (j > 2 && cells[i][j - 3].type == previous) return true;
+                        }
+                        if(j < size - 1)
+                        {
+                            if (i > 0 && cells[i - 1][j + 1].type == previous) return true;
+                            if (i < size - 1 && cells[i + 1][j + 1].type == previous) return true;
+                            if (j < size - 2 && cells[i][j + 2].type == previous) return true;
+                        }
+                    }
+                }
+
+                previous = CellType.Default;
+                for (int j = 0; j < size; j++)
+                {
+                    if (cells[j][i].type == previous)
+                    {
+                        count = 2;
+                    }
+                    else
+                    {
+                        count = 1;
+                    }
+                    previous = cells[j][i].type;
+
+                    if (count == 2)
+                    {
+                        if (i > 1)
+                        {
+                            if (j > 0 && cells[j - 1][i - 2].type == previous) return true;
+                            if (j < size - 1 && cells[j + 1][i - 2].type == previous) return true;
+                            if (i > 2 && cells[j][i - 3].type == previous) return true;
+                        }
+                        if (i < size - 1)
+                        {
+                            if (j > 0 && cells[j - 1][i + 1].type == previous) return true;
+                            if (j < size - 1 && cells[j + 1][i + 1].type == previous) return true;
+                            if (i < size - 2 && cells[j][i + 2].type == previous) return true;
+                        }
+                    }
+                }
+            }
+            return false;
         }
         
     }
