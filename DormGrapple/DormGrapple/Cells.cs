@@ -19,7 +19,7 @@ namespace DormGrapple
 
     public interface ICell
     {
-        CellType type { get; }
+        CellType Type { get; }
         int Damage { get; }
         double Percentage { get; }
         int Own { get; }
@@ -27,7 +27,7 @@ namespace DormGrapple
 
     public class Cell : ICell
     {
-        public CellType type
+        public CellType Type
         {
             get => CellType.Default;
         }
@@ -38,7 +38,7 @@ namespace DormGrapple
 
     public class Apple : ICell
     {
-        public CellType type
+        public CellType Type
         {
             get => CellType.Apple;
         }
@@ -49,7 +49,7 @@ namespace DormGrapple
 
     public class Chip : ICell
     {
-        public CellType type
+        public CellType Type
         {
             get => CellType.Chip;
         }
@@ -60,7 +60,7 @@ namespace DormGrapple
 
     public class Bacterium : ICell
     {
-        public CellType type
+        public CellType Type
         {
             get => CellType.Bacterium;
         }
@@ -71,7 +71,7 @@ namespace DormGrapple
 
     public class Slipper : ICell
     {
-        public CellType type
+        public CellType Type
         {
             get => CellType.Slipper;
         }
@@ -82,7 +82,7 @@ namespace DormGrapple
 
     public class CockroachTrap : ICell
     {
-        public CellType type
+        public CellType Type
         {
             get => CellType.CockroachTrap;
         }
@@ -93,7 +93,7 @@ namespace DormGrapple
 
     public class Poison : ICell
     {
-        public CellType type
+        public CellType Type
         {
             get => CellType.Poison;
         }
@@ -112,8 +112,8 @@ namespace DormGrapple
             ICell cell;
             do
             {
-                int type = rand.Next(0, 6);
-                switch (type)
+                int Type = rand.Next(0, 6);
+                switch (Type)
                 {
                     case 0:
                         cell = new Apple();
@@ -136,7 +136,7 @@ namespace DormGrapple
                         break;
                 }
 
-            } while (disables.Contains(cell.type));
+            } while (disables.Contains(cell.Type));
 
             return cell;
         }
