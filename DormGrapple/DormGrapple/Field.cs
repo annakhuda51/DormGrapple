@@ -23,7 +23,7 @@ namespace DormGrapple
                 cells.Add(new List<ICell>(size));
                 for (int j = 0; j < size; j++)
                 {
-                    cells[i].Add(factory.createCell(new List<CellType>()));
+                    cells[i].Add(new Cell());
                 }
             }
 
@@ -91,30 +91,30 @@ namespace DormGrapple
             {
                 for (int j = i - 1; j < size - i + 1; j++)
                 {
-                    ICell cell = factory.createCell(CheckCell(i - 1, j));
+                    ICell cell = factory.createCell(CheckCell(i - 1, j), CountEachTypeCell());
                     cells[i - 1][j] = cell;
                 }
 
                 for (int j = i; j < size - i + 1; j++)
                 {
-                    ICell cell = factory.createCell(CheckCell(j, size - i));
+                    ICell cell = factory.createCell(CheckCell(j, size - i), CountEachTypeCell());
                     cells[j][size - i] = cell;
                 }
 
                 for (int j = size - i - 1; j >= i - 1; --j)
                 {
-                    ICell cell = factory.createCell(CheckCell(size - i, j));
+                    ICell cell = factory.createCell(CheckCell(size - i, j), CountEachTypeCell());
                     cells[size - i][j] = cell;
                 }
 
                 for (int j = size - i - 1; j >= i; j--)
                 {
-                    ICell cell = factory.createCell(CheckCell(j, i - 1));
+                    ICell cell = factory.createCell(CheckCell(j, i - 1), CountEachTypeCell());
                     cells[j][i - 1] = cell;
                 }
             }
 
-            if (size % 2 == 1) cells[size / 2][size / 2] = factory.createCell(CheckCell(size / 2, size / 2));
+            if (size % 2 == 1) cells[size / 2][size / 2] = factory.createCell(CheckCell(size / 2, size / 2), CountEachTypeCell());
         }
 
         public List<CellType> CheckCell(int i, int j)
@@ -411,6 +411,63 @@ namespace DormGrapple
             }
 
             return combinations;
+        }
+
+        public Dictionary<ICell, int> CountEachTypeCell()
+        {
+            var dictionary = new Dictionary<ICell, int>();
+
+            var apple = new Apple();
+            var chip = new Chip();
+            var bacterium = new Bacterium();
+            var slipper = new Slipper();
+            var cockroachTrap = new CockroachTrap();
+            var poison = new Poison();
+
+            dictionary[apple] = 0;
+            dictionary[chip] = 0;
+            dictionary[bacterium] = 0;
+            dictionary[slipper] = 0;
+            dictionary[cockroachTrap] = 0;
+            dictionary[poison] = 0;
+
+            for (int i = 0; i < size; i++)
+            {
+                for (int j = 0; j < size; j++)
+                {
+                    if (cells[i][j] is Apple)
+                    {
+                        dictionary[apple]++;
+                    }
+
+                    if (cells[i][j] is Chip)
+                    {
+                        dictionary[chip]++;
+                    }
+
+                    if (cells[i][j] is Bacterium)
+                    {
+                        dictionary[bacterium]++;
+                    }
+
+                    if (cells[i][j] is Slipper)
+                    {
+                        dictionary[slipper]++;
+                    }
+
+                    if (cells[i][j] is CockroachTrap)
+                    {
+                        dictionary[cockroachTrap]++;
+                    }
+
+                    if (cells[i][j] is Poison)
+                    {
+                        dictionary[poison]++;
+                    }
+                }
+            }
+
+            return dictionary;
         }
     }
 }
