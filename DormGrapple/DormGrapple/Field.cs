@@ -12,10 +12,10 @@ namespace DormGrapple
     {
         public List<List<ICell>> cells;
         private int size;
+        CellsFactory factory = new CellsFactory();
 
         public Field(int size = 9)
         {
-            CellsFactory factory = new CellsFactory();
             cells = new List<List<ICell>>(size);
 
             for (int i = 0; i < size; i++)
@@ -70,7 +70,6 @@ namespace DormGrapple
                     {
                         Console.BackgroundColor = ConsoleColor.Red;
                     }
-
                     Console.Write("  ");
                 }
 
@@ -85,8 +84,6 @@ namespace DormGrapple
 
         public void SetField()
         {
-            CellsFactory factory = new CellsFactory();
-
             for (int i = 1; i <= size / 2; i++)
             {
                 for (int j = i - 1; j < size - i + 1; j++)
@@ -411,6 +408,80 @@ namespace DormGrapple
             }
 
             return combinations;
+        }
+
+        public void Move(Position p1, Position p2)
+        {
+            var mem = cells[p1.Row][p1.Column];
+            cells[p1.Row][p1.Column] = cells[p2.Row][p2.Column];
+            cells[p2.Row][p2.Column] = mem;
+
+            if (!HasCombinations())
+            {
+                mem = cells[p1.Row][p1.Column];
+                cells[p1.Row][p1.Column] = cells[p2.Row][p2.Column];
+                cells[p2.Row][p2.Column] = mem;
+            }
+            else do
+                {
+                    var allCombo = AllCombinations();
+                    
+                    foreach(var combo in allCombo)
+                    {
+                        int score = RemoveAndFill(combo);
+                    }
+                }
+                while (HasCombinations());
+        }
+
+        private int RemoveAndFill(Combination combo)
+        {
+            int score = combo.Length * cells[combo.combination[0].Row][combo.combination[0].Column].Damage;
+
+            List<Position> empty = new List<Position>();
+
+            if (combo.Length < 5)
+            {
+                if (combo.combination[0].Column == combo.combination[1].Column)
+                {
+                    int index = 0;
+                    foreach (var element in combo.combination)
+                    {
+                        if (element.Column > index) index = element.Row;
+                    }
+
+                    for (int i = index; i > combo.Length-1; i--)
+                    {
+                        cells[i][combo.combination[1].Column] = cells[i- combo.Length][combo.combination[1].Column];
+                    }
+
+                    for (int i = combo.Length - 1; i>=0; i--)
+                    {
+                        cells[i][combo.combination[1].Column] = factory.createCell(new List<CellType>());
+                    }
+                } else
+                {
+                    int index = 0;
+                    foreach (var element in combo.combination)
+                    {
+                        if (element.Row > index) index = element.Row;
+                    }
+
+                    for (int i = index; i > combo.Length - 1; i--)
+                    {
+                        cells[combo.combination[1].Row][i] = cells[combo.combination[1].Row][i - combo.Length];
+                    }
+
+                    for (int i = combo.Length - 1; i >= 0; i--)
+                    {
+                        cells[combo.combination[1].Row][1] = factory.createCell(new List<CellType>());
+                    }
+                }
+            } else
+            {
+
+            }
+            return score;
         }
     }
 }

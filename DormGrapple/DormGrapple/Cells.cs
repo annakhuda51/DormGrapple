@@ -17,12 +17,18 @@ namespace DormGrapple
         Default 
     }
 
+    public enum Owner
+    {
+        Player = 0,
+        Enemy
+    }
+
     public interface ICell
     {
         CellType Type { get; }
         int Damage { get; }
         double Percentage { get; }
-        int Own { get; }
+        Owner Owner { get; }
     }
 
     public class Cell : ICell
@@ -33,7 +39,7 @@ namespace DormGrapple
         }
         public int Damage { get => 0; }
         public double Percentage { get => 0; }
-        public int Own { get => 0; }
+        public Owner Owner { get => Owner.Player; }
     }
 
     public class Apple : ICell
@@ -44,7 +50,7 @@ namespace DormGrapple
         }
         public int Damage { get => 3; }
         public double Percentage { get => 0.4; }
-        public int Own { get => 0; }
+        public Owner Owner { get => Owner.Player; }
     }
 
     public class Chip : ICell
@@ -55,7 +61,7 @@ namespace DormGrapple
         }
         public int Damage { get => 5; }
         public double Percentage { get => 0.35; }
-        public int Own { get => 0; }
+        public Owner Owner { get => Owner.Player; }
     }
 
     public class Bacterium : ICell
@@ -66,7 +72,7 @@ namespace DormGrapple
         }
         public int Damage { get => 7; }
         public double Percentage { get => 0.25; }
-        public int Own { get => 0; }
+        public Owner Owner { get => Owner.Player; }
     }
 
     public class Slipper : ICell
@@ -77,7 +83,7 @@ namespace DormGrapple
         }
         public int Damage { get => 3; }
         public double Percentage { get => 0.4; }
-        public int Own { get => 1; }
+        public Owner Owner { get => Owner.Enemy; }
     }
 
     public class CockroachTrap : ICell
@@ -88,7 +94,7 @@ namespace DormGrapple
         }
         public int Damage { get => 5; }
         public double Percentage { get => 0.35; }
-        public int Own { get => 1; }
+        public Owner Owner { get => Owner.Enemy; }
     }
 
     public class Poison : ICell
@@ -99,7 +105,7 @@ namespace DormGrapple
         }
         public int Damage { get => 7; }
         public double Percentage { get => 0.25; }
-        public int Own { get => 1; }
+        public Owner Owner { get => Owner.Enemy; }
     }
 
     public class CellsFactory
