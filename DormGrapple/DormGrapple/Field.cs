@@ -32,44 +32,48 @@ namespace DormGrapple
 
         public void Show()
         {
+            Console.WriteLine("  1 2 3 4 5 6 7 8 9");
             for (int i = 0; i < cells.Count; i++)
             {
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.Write((i + 1) + " ");
                 for (int j = 0; j < cells[i].Count; j++)
                 {
                     if (cells[i][j] is Apple)
                     {
-                        Console.BackgroundColor = ConsoleColor.DarkGreen;
+                        Console.BackgroundColor = ConsoleColor.Yellow;
                     }
 
                     if (cells[i][j] is Chip)
                     {
-                        Console.BackgroundColor = ConsoleColor.Blue;
+                        Console.BackgroundColor = ConsoleColor.Red;
                     }
 
                     if (cells[i][j] is Bacterium)
                     {
-                        Console.BackgroundColor = ConsoleColor.Green;
+                        Console.BackgroundColor = ConsoleColor.DarkRed;
                     }
 
                     if (cells[i][j] is Slipper)
                     {
-                        Console.BackgroundColor = ConsoleColor.Gray;
+                        Console.BackgroundColor = ConsoleColor.Cyan;
                     }
 
                     if (cells[i][j] is CockroachTrap)
                     {
-                        Console.BackgroundColor = ConsoleColor.DarkYellow;
+                        Console.BackgroundColor = ConsoleColor.DarkCyan;
                     }
 
                     if (cells[i][j] is Poison)
                     {
-                        Console.BackgroundColor = ConsoleColor.Cyan;
+                        Console.BackgroundColor = ConsoleColor.Blue;
                     }
 
                     if (cells[i][j] is Cell)
                     {
                         Console.BackgroundColor = ConsoleColor.Red;
                     }
+
                     Console.Write("  ");
                 }
 
@@ -78,8 +82,6 @@ namespace DormGrapple
             }
 
             Console.BackgroundColor = ConsoleColor.Black;
-            //Console.ReadKey();
-            //Console.Clear();
         }
 
         public void SetField()
