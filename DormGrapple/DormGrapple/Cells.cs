@@ -257,14 +257,14 @@ namespace DormGrapple
                     case Owner.Player:
                         currentPercentageList.Add(new Tuple<ICell, double>(elem.Item1, elem.Item2 * 
                                                                            Math.Pow((1.0 + (all * elem.Item2 / defaultPercentageList.Sum(tuple => tuple.Item2) - 
-                                                                           countDictionary.Where(pair => pair.Key.Type == elem.Item1.Type).Sum(pair => pair.Value)) / all * 4), 5) *
-                                                                           Math.Pow((1.0 + ((double)all / 2 - ownPlayer) / all * 3), 2)));
+                                                                           countDictionary.Where(pair => pair.Key.Type == elem.Item1.Type).Sum(pair => pair.Value)) / all * 5), 5) *
+                                                                           Math.Pow((1.0 + ((double)all / 2 - ownPlayer) / all * 5), 2)));
                         break;
                     case Owner.Enemy:
                         currentPercentageList.Add(new Tuple<ICell, double>(elem.Item1, elem.Item2 * 
                                                                            Math.Pow((1.0 + (all * elem.Item2 / defaultPercentageList.Sum(tuple => tuple.Item2) - 
-                                                                           countDictionary.Where(pair => pair.Key.Type == elem.Item1.Type).Sum(pair => pair.Value)) / all * 4), 5) *
-                                                                           Math.Pow((1.0 + ((double)all / 2 - ownEnemy) / all * 3), 2)));
+                                                                           countDictionary.Where(pair => pair.Key.Type == elem.Item1.Type).Sum(pair => pair.Value)) / all * 5), 5) *
+                                                                           Math.Pow((1.0 + ((double)all / 2 - ownEnemy) / all * 5), 2)));
                         break;
                 }
             }
