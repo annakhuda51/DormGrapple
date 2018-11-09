@@ -84,34 +84,38 @@ namespace DormGrapple
 
         public void SetField()
         {
-            for (int i = 1; i <= size / 2; i++)
+            do
             {
-                for (int j = i - 1; j < size - i + 1; j++)
+                for (int i = 1; i <= size / 2; i++)
                 {
-                    ICell cell = factory.createCell(CheckCell(i - 1, j), CountEachTypeCell());
-                    cells[i - 1][j] = cell;
+                    for (int j = i - 1; j < size - i + 1; j++)
+                    {
+                        ICell cell = factory.createCell(CheckCell(i - 1, j), CountEachTypeCell());
+                        cells[i - 1][j] = cell;
+                    }
+
+                    for (int j = i; j < size - i + 1; j++)
+                    {
+                        ICell cell = factory.createCell(CheckCell(j, size - i), CountEachTypeCell());
+                        cells[j][size - i] = cell;
+                    }
+
+                    for (int j = size - i - 1; j >= i - 1; --j)
+                    {
+                        ICell cell = factory.createCell(CheckCell(size - i, j), CountEachTypeCell());
+                        cells[size - i][j] = cell;
+                    }
+
+                    for (int j = size - i - 1; j >= i; j--)
+                    {
+                        ICell cell = factory.createCell(CheckCell(j, i - 1), CountEachTypeCell());
+                        cells[j][i - 1] = cell;
+                    }
                 }
 
-                for (int j = i; j < size - i + 1; j++)
-                {
-                    ICell cell = factory.createCell(CheckCell(j, size - i), CountEachTypeCell());
-                    cells[j][size - i] = cell;
-                }
-
-                for (int j = size - i - 1; j >= i - 1; --j)
-                {
-                    ICell cell = factory.createCell(CheckCell(size - i, j), CountEachTypeCell());
-                    cells[size - i][j] = cell;
-                }
-
-                for (int j = size - i - 1; j >= i; j--)
-                {
-                    ICell cell = factory.createCell(CheckCell(j, i - 1), CountEachTypeCell());
-                    cells[j][i - 1] = cell;
-                }
-            }
-
-            if (size % 2 == 1) cells[size / 2][size / 2] = factory.createCell(CheckCell(size / 2, size / 2), CountEachTypeCell());
+                if (size % 2 == 1)
+                    cells[size / 2][size / 2] = factory.createCell(CheckCell(size / 2, size / 2), CountEachTypeCell());
+            } while (!HasMoves());
         }
 
         public List<CellType> CheckCell(int i, int j)
@@ -491,54 +495,58 @@ namespace DormGrapple
                 while (HasCombinations());
         }
 
-        private int RemoveAndFill(Combination combo)
+        public Dictionary<Owner, double> RemoveAndFill(Owner owner)
         {
-            int score = combo.Length * cells[combo.combination[0].Row][combo.combination[0].Column].Damage;
+            var allCombo = AllCombinations();
+            // count of damage that person produce
+            var damageDict = new Dictionary<Owner, double>();
+            var deleteList = new List<Position>();
 
-            List<Position> empty = new List<Position>();
-
-            if (combo.Length < 5)
+            foreach (var combo in allCombo)
             {
-                if (combo.combination[0].Column == combo.combination[1].Column)
+                Console.WriteLine("Combo: " + combo + " " + cells[combo.combination[0].Row][combo.combination[0].Column].Type);
+                if (!damageDict.ContainsKey(cells[combo.combination[0].Row][combo.combination[0].Column].Owner))
+                    damageDict[cells[combo.combination[0].Row][combo.combination[0].Column].Owner] = 0;
+                if (owner == cells[combo.combination[0].Row][combo.combination[0].Column].Owner)
                 {
-                    int index = 0;
-                    foreach (var element in combo.combination)
-                    {
-                        if (element.Column > index) index = element.Row;
-                    }
-
-                    for (int i = index; i > combo.Length-1; i--)
-                    {
-                        cells[i][combo.combination[1].Column] = cells[i- combo.Length][combo.combination[1].Column];
-                    }
-
-                    for (int i = combo.Length - 1; i>=0; i--)
-                    {
-                        cells[i][combo.combination[1].Column] = factory.createCell(new List<CellType>());
-                    }
-                } else
-                {
-                    int index = 0;
-                    foreach (var element in combo.combination)
-                    {
-                        if (element.Row > index) index = element.Row;
-                    }
-
-                    for (int i = index; i > combo.Length - 1; i--)
-                    {
-                        cells[combo.combination[1].Row][i] = cells[combo.combination[1].Row][i - combo.Length];
-                    }
-
-                    for (int i = combo.Length - 1; i >= 0; i--)
-                    {
-                        cells[combo.combination[1].Row][1] = factory.createCell(new List<CellType>());
-                    }
+                    damageDict[cells[combo.combination[0].Row][combo.combination[0].Column].Owner]
+                        += combo.Length * cells[combo.combination[0].Row][combo.combination[0].Column].Damage;
                 }
-            } else
-            {
+                else
+                {
+                    damageDict[cells[combo.combination[0].Row][combo.combination[0].Column].Owner] +=
+                        (combo.Length * cells[combo.combination[0].Row][combo.combination[0].Column].Damage / 2.0);
+                }
 
+                deleteList.AddRange(combo.combination);
             }
-            return score;
+
+            deleteList.Sort();
+
+            foreach (var deletePosition in deleteList)
+            {
+                for (var rowIndex = deletePosition.Row; rowIndex > 0; rowIndex--)
+                {
+                    cells[rowIndex][deletePosition.Column] = cells[rowIndex - 1][deletePosition.Column];
+                }
+
+                cells[0][deletePosition.Column] =
+                    factory.createCell(CheckCell(0, deletePosition.Column), CountEachTypeCell());
+            }
+
+            return damageDict;
+        }
+
+        public void CreateFullRandomField()
+        {
+            for (int i = 0; i < size; i++)
+            {
+                for (int j = 0; j < size; j++)
+                {
+                    cells[i][j] = factory.createCell(new List<CellType>(), new Dictionary<ICell, int>());
+                }
+            }
+
         }
     }
 }

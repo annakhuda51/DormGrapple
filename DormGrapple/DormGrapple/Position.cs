@@ -8,8 +8,8 @@ namespace DormGrapple
 {
     public class Position : IEquatable<Position>
     {
-        public int Row { get; set; }
         public int Column { get; set; }
+        public int Row { get; set; }
 
         public Position()
         {
@@ -35,7 +35,7 @@ namespace DormGrapple
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
-            return Equals((Position) obj);
+            return Equals((Position)obj);
         }
 
         public override int GetHashCode()
@@ -44,6 +44,15 @@ namespace DormGrapple
             {
                 return (Row * 397) ^ Column;
             }
+        }
+
+        public int CompareTo(Position other)
+        {
+            if (ReferenceEquals(this, other)) return 0;
+            if (ReferenceEquals(null, other)) return 1;
+            var rowComparison = Row.CompareTo(other.Row);
+            if (rowComparison != 0) return rowComparison;
+            return Column.CompareTo(other.Column);
         }
     }
 }
