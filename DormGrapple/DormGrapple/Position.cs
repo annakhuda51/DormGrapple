@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DormGrapple
 {
-    public class Position : IEquatable<Position>
+    public class Position : IEquatable<Position>, IComparable<Position>
     {
         public int Column { get; set; }
         public int Row { get; set; }

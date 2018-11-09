@@ -20,7 +20,8 @@ namespace DormGrapple
     public enum Owner
     {
         Player = 0,
-        Enemy
+        Enemy,
+        Default
     }
 
     public interface ICell
@@ -48,6 +49,11 @@ namespace DormGrapple
             get => 0;
         }
 
+        public Owner Owner
+        {
+            get => Owner.Default;
+        }
+
         public int Own
         {
             get => 0;
@@ -63,12 +69,17 @@ namespace DormGrapple
 
         public int Damage
         {
-            get => 3;
+            get => 5;
         }
 
         public double Percentage
         {
             get => 0.4;
+        }
+
+        public Owner Owner
+        {
+            get => Owner.Player;
         }
 
         public int Own
@@ -86,12 +97,17 @@ namespace DormGrapple
 
         public int Damage
         {
-            get => 5;
+            get => 6;
         }
 
         public double Percentage
         {
             get => 0.35;
+        }
+
+        public Owner Owner
+        {
+            get => Owner.Player;
         }
 
         public int Own
@@ -117,6 +133,11 @@ namespace DormGrapple
             get => 0.25;
         }
 
+        public Owner Owner
+        {
+            get => Owner.Player;
+        }
+
         public int Own
         {
             get => 0;
@@ -132,12 +153,17 @@ namespace DormGrapple
 
         public int Damage
         {
-            get => 3;
+            get => 5;
         }
 
         public double Percentage
         {
             get => 0.4;
+        }
+
+        public Owner Owner
+        {
+            get => Owner.Enemy;
         }
 
         public int Own
@@ -155,12 +181,17 @@ namespace DormGrapple
 
         public int Damage
         {
-            get => 5;
+            get => 6;
         }
 
         public double Percentage
         {
             get => 0.35;
+        }
+
+        public Owner Owner
+        {
+            get => Owner.Enemy;
         }
 
         public int Own
@@ -186,6 +217,11 @@ namespace DormGrapple
             get => 0.25;
         }
 
+        public Owner Owner
+        {
+            get => Owner.Enemy;
+        }
+
         public int Own
         {
             get => 1;
@@ -194,13 +230,12 @@ namespace DormGrapple
 
     public class CellsFactory
     {
-
         Random rand = new Random();
 
         public ICell createCell(List<CellType> disables, Dictionary<ICell, int> countDictionary)
         {
-            var own0 = countDictionary.Where(pair => pair.Key.Own == 0).Sum(pair => pair.Value);
-            var own1 = countDictionary.Where(pair => pair.Key.Own == 1).Sum(pair => pair.Value);
+            var ownPlayer = countDictionary.Where(pair => pair.Key.Owner == Owner.Player).Sum(pair => pair.Value);
+            var ownEnemy = countDictionary.Where(pair => pair.Key.Owner == Owner.Enemy).Sum(pair => pair.Value);
             var all = countDictionary.Sum(pair => pair.Value);
             if (all == 0)
                 all = 1;
@@ -217,28 +252,25 @@ namespace DormGrapple
 
             foreach (var elem in defaultPercentageList)
             {
-                switch (elem.Item1.Own)
+                switch (elem.Item1.Owner)
                 {
-                    case 0:
-                        currentPercentageList.Add(new Tuple<ICell, double>(elem.Item1, elem.Item2 * Math.Pow(
-                                                                                           (1.0 + (all * elem.Item2 / defaultPercentageList.Sum(tuple => tuple.Item2)
-                                                                                                   - countDictionary.Where(pair => pair.Key.Type == elem.Item1.Type)
-                                                                                                       .Sum(pair => pair.Value)) / all * 4), 5) *
-                                                                                       Math.Pow((1.0 + ((double)all / 2 - own0) / all * 3), 2)));
+                    case Owner.Player:
+                        currentPercentageList.Add(new Tuple<ICell, double>(elem.Item1, elem.Item2 * 
+                                                                           Math.Pow((1.0 + (all * elem.Item2 / defaultPercentageList.Sum(tuple => tuple.Item2) - 
+                                                                           countDictionary.Where(pair => pair.Key.Type == elem.Item1.Type).Sum(pair => pair.Value)) / all * 4), 5) *
+                                                                           Math.Pow((1.0 + ((double)all / 2 - ownPlayer) / all * 3), 2)));
                         break;
-                    case 1:
-                        currentPercentageList.Add(new Tuple<ICell, double>(elem.Item1,elem.Item2 * Math.Pow(
-                                                                                          (1.0 + (all * elem.Item2 / defaultPercentageList.Sum(tuple => tuple.Item2)
-                                                                                                  - countDictionary.Where(pair => pair.Key.Type == elem.Item1.Type)
-                                                                                                      .Sum(pair => pair.Value)) / all * 4), 5) *
-                                                                                      Math.Pow((1.0 + ((double)all / 2 - own1) / all * 3), 2)));
+                    case Owner.Enemy:
+                        currentPercentageList.Add(new Tuple<ICell, double>(elem.Item1, elem.Item2 * 
+                                                                           Math.Pow((1.0 + (all * elem.Item2 / defaultPercentageList.Sum(tuple => tuple.Item2) - 
+                                                                           countDictionary.Where(pair => pair.Key.Type == elem.Item1.Type).Sum(pair => pair.Value)) / all * 4), 5) *
+                                                                           Math.Pow((1.0 + ((double)all / 2 - ownEnemy) / all * 3), 2)));
                         break;
                 }
             }
 
             ICell cell = new Cell();
             do
-
             {
                 double something = (rand.NextDouble() * currentPercentageList.Sum(elem => elem.Item2));
                 double lowerBound = 0;

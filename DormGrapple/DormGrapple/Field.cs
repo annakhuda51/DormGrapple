@@ -471,9 +471,10 @@ namespace DormGrapple
             return dictionary;
         }
 
-        public void Move(Position p1, Position p2)
+        public Dictionary<Owner, double> Move(Position p1, Position p2, Owner owner)
         {
             var mem = cells[p1.Row][p1.Column];
+            var damageDictionary = new Dictionary<Owner, double>();
             cells[p1.Row][p1.Column] = cells[p2.Row][p2.Column];
             cells[p2.Row][p2.Column] = mem;
 
@@ -485,14 +486,23 @@ namespace DormGrapple
             }
             else do
                 {
-                    var allCombo = AllCombinations();
-                    
-                    foreach(var combo in allCombo)
+                    var dictionary = RemoveAndFill(owner);
+                    foreach(var pair in dictionary)
                     {
-                        int score = RemoveAndFill(combo);
+                        if (!damageDictionary.ContainsKey(pair.Key))
+                            damageDictionary[pair.Key] = 0;
+                        damageDictionary[pair.Key] += pair.Value;
                     }
                 }
                 while (HasCombinations());
+
+            if (!HasMoves())
+            {
+                Console.WriteLine("No moves");
+                SetField();
+            }
+
+            return damageDictionary;
         }
 
         public Dictionary<Owner, double> RemoveAndFill(Owner owner)
