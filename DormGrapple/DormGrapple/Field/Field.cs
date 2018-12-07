@@ -10,8 +10,9 @@ namespace DormGrapple
 
     public class Field
     {
-        public List<List<ICell>> cells;
+        private List<List<ICell>> cells;
         private int size;
+        public List<List<ICell>> Cells { get => cells; }
         CellsFactory factory = new CellsFactory();
 
         public Field(int size = 9)
@@ -117,7 +118,7 @@ namespace DormGrapple
 
                 if (size % 2 == 1)
                     cells[size / 2][size / 2] = factory.createCell(CheckCell(size / 2, size / 2), CountEachTypeCell());
-            } while (!HasMoves());
+            } while (!Analytics.HasMoves(cells));
         }
 
         public List<CellType> CheckCell(int i, int j)
@@ -163,257 +164,6 @@ namespace DormGrapple
             }
 
             return list;
-        }
-
-        public bool HasMoves()
-        {
-            for (int i = 0; i < size; i++)
-            {
-                int count = 0;
-                CellType previous = CellType.Default;
-                for (int j = 0; j < size; j++)
-                {
-                    if (cells[i][j].Type == previous)
-                    {
-                        count = 2;
-                    }
-                    else
-                    {
-                        count = 1;
-                    }
-
-                    previous = cells[i][j].Type;
-
-                    if (count == 2)
-                    {
-                        if (j > 1)
-                        {
-                            if (i > 0 && cells[i - 1][j - 2].Type == previous) return true;
-                            if (i < size - 1 && cells[i + 1][j - 2].Type == previous) return true;
-                            if (j > 2 && cells[i][j - 3].Type == previous) return true;
-                        }
-
-                        if (j < size - 1)
-                        {
-                            if (i > 0 && cells[i - 1][j + 1].Type == previous) return true;
-                            if (i < size - 1 && cells[i + 1][j + 1].Type == previous) return true;
-                            if (j < size - 2 && cells[i][j + 2].Type == previous) return true;
-                        }
-                    }
-                }
-
-                previous = CellType.Default;
-                for (int j = 0; j < size; j++)
-                {
-                    if (cells[j][i].Type == previous)
-                    {
-                        count = 2;
-                    }
-                    else
-                    {
-                        count = 1;
-                    }
-
-                    previous = cells[j][i].Type;
-
-                    if (count == 2)
-                    {
-                        if (i > 1)
-                        {
-                            if (j > 0 && cells[j - 1][i - 2].Type == previous) return true;
-                            if (j < size - 1 && cells[j + 1][i - 2].Type == previous) return true;
-                            if (i > 2 && cells[j][i - 3].Type == previous) return true;
-                        }
-
-                        if (i < size - 1)
-                        {
-                            if (j > 0 && cells[j - 1][i + 1].Type == previous) return true;
-                            if (j < size - 1 && cells[j + 1][i + 1].Type == previous) return true;
-                            if (i < size - 2 && cells[j][i + 2].Type == previous) return true;
-                        }
-                    }
-                }
-            }
-
-            return false;
-        }
-
-        public bool HasCombinations()
-        {
-            int index = 0;
-            CellType previous = CellType.Default;
-            int count = 0;
-
-            for (int i = 0; i < size; i++)
-            {
-                for (int j = 0; j < size; j++)
-                {
-                    index = i;
-                    previous = cells[i][j].Type;
-                    count = 1;
-                    while (++index < size && previous == cells[index][j].Type)
-                    {
-                        count++;
-                        if (count > 2)
-                        {
-                            return true;
-                        }
-                    }
-
-                    index = i;
-                    previous = cells[i][j].Type;
-                    count = 1;
-                    while (--index > -1 && previous == cells[index][j].Type)
-                    {
-                        count++;
-                        if (count > 2)
-                        {
-                            return true;
-                        }
-                    }
-
-                    index = j;
-                    previous = cells[i][j].Type;
-                    count = 1;
-                    while (++index < size && previous == cells[i][index].Type)
-                    {
-                        count++;
-                        if (count > 2)
-                        {
-                            return true;
-                        }
-                    }
-
-                    index = j;
-                    previous = cells[i][j].Type;
-                    count = 1;
-                    while (--index > -1 && previous == cells[i][index].Type)
-                    {
-                        count++;
-                        if (count > 2)
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-
-            return false;
-        }
-
-        public List<Combination> AllCombinations()
-        {
-            List<Combination> combinations = new List<Combination>();
-            int index = 0;
-            CellType previous = CellType.Default;
-            int count = 0;
-            Combination currCombination = new Combination();
-
-            for (int i = 0; i < size; i++)
-            {
-                for (int j = 0; j < size; j++)
-                {
-                    index = i;
-                    previous = cells[i][j].Type;
-                    count = 1;
-                    currCombination = new Combination();
-                    currCombination.combination.Add(new Position(i, j));
-
-                    while (++index < size && previous == cells[index][j].Type)
-                    {
-                        currCombination.combination.Add(new Position(index, j));
-                        count++;
-                    }
-
-                    if (count > 2 && !combinations.Contains(currCombination))
-                    {
-                        combinations.Add(currCombination);
-                    }
-
-                    index = i;
-                    previous = cells[i][j].Type;
-                    count = 1;
-                    currCombination = new Combination();
-                    currCombination.combination.Add(new Position(i, j));
-
-                    while (--index > -1 && previous == cells[index][j].Type)
-                    {
-                        currCombination.combination.Add(new Position(index, j));
-                        count++;
-                    }
-
-                    if (count > 2 && !combinations.Contains(currCombination))
-                    {
-                        combinations.Add(currCombination);
-                    }
-
-                    index = j;
-                    previous = cells[i][j].Type;
-                    count = 1;
-                    currCombination = new Combination();
-                    currCombination.combination.Add(new Position(i, j));
-
-                    while (++index < size && previous == cells[i][index].Type)
-                    {
-                        currCombination.combination.Add(new Position(i, index));
-                        count++;
-                    }
-
-                    if (count > 2 && !combinations.Contains(currCombination))
-                    {
-                        combinations.Add(currCombination);
-                    }
-
-                    index = j;
-                    previous = cells[i][j].Type;
-                    count = 1;
-                    currCombination = new Combination();
-                    currCombination.combination.Add(new Position(i, j));
-
-                    while (--index > -1 && previous == cells[i][index].Type)
-                    {
-                        currCombination.combination.Add(new Position(i, index));
-                        count++;
-                    }
-
-                    if (count > 2 && !combinations.Contains(currCombination))
-                    {
-                        combinations.Add(currCombination);
-                    }
-                }
-            }
-
-            return ConcatCombinations(combinations);
-        }
-
-        public List<Combination> ConcatCombinations(List<Combination> combinations)
-        {
-            for (int i = 0; i < combinations.Count; i++)
-            {
-                for (int j = 0; j < combinations.Count; j++)
-                {
-                    if (combinations[i].combination.Intersect(combinations[j].combination).Count() != 0 && i != j)
-                    {
-                        combinations[i].combination = combinations[i].combination.Concat(combinations[j].combination)
-                            .Distinct().ToList();
-                        combinations[j].combination = new List<Position>();
-                    }
-                }
-            }
-
-            for (int i = 0; i < combinations.Count;)
-            {
-                if (combinations[i].Length == 0)
-                {
-                    combinations.RemoveAt(i);
-                }
-                else
-                {
-                    i++;
-                }
-            }
-
-            return combinations;
         }
 
         public Dictionary<ICell, int> CountEachTypeCell()
@@ -480,7 +230,7 @@ namespace DormGrapple
             cells[p1.Row][p1.Column] = cells[p2.Row][p2.Column];
             cells[p2.Row][p2.Column] = mem;
 
-            if (!HasCombinations())
+            if (!Analytics.HasCombinations(cells))
             {
                 mem = cells[p1.Row][p1.Column];
                 cells[p1.Row][p1.Column] = cells[p2.Row][p2.Column];
@@ -496,11 +246,11 @@ namespace DormGrapple
                         damageDictionary[pair.Key] += pair.Value;
                     }
                 }
-                while (HasCombinations());
+                while (Analytics.HasCombinations(cells));
 
-            if (!HasMoves())
+            if (!Analytics.HasMoves(cells))
             {
-                Console.WriteLine("No moves");
+                //Console.WriteLine("No moves");
                 SetField();
             }
 
@@ -509,14 +259,14 @@ namespace DormGrapple
 
         public Dictionary<Owner, double> RemoveAndFill(Owner owner)
         {
-            var allCombo = AllCombinations();
+            var allCombo = Analytics.AllCombinations(cells);
             // count of damage that person produce
             var damageDict = new Dictionary<Owner, double>();
             var deleteList = new List<Position>();
 
             foreach (var combo in allCombo)
             {
-                Console.WriteLine("Combo: " + combo + " " + cells[combo.combination[0].Row][combo.combination[0].Column].Type);
+                //Console.WriteLine("Combo: " + combo + " " + cells[combo.combination[0].Row][combo.combination[0].Column].Type);
                 if (!damageDict.ContainsKey(cells[combo.combination[0].Row][combo.combination[0].Column].Owner))
                     damageDict[cells[combo.combination[0].Row][combo.combination[0].Column].Owner] = 0;
                 if (owner == cells[combo.combination[0].Row][combo.combination[0].Column].Owner)
