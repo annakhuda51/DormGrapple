@@ -17,7 +17,7 @@ namespace DormGrapple
                 CellType previous = CellType.Default;
                 for (int j = 0; j < size; j++)
                 {
-                    if (cells[i][j].Type == previous)
+                    if (cells[i][j].Type == previous && previous != CellType.Default)
                     {
                         count = 2;
                     }
@@ -49,7 +49,7 @@ namespace DormGrapple
                 previous = CellType.Default;
                 for (int j = 0; j < size; j++)
                 {
-                    if (cells[j][i].Type == previous)
+                    if (cells[j][i].Type == previous && previous != CellType.Default)
                     {
                         count = 2;
                     }
@@ -81,7 +81,7 @@ namespace DormGrapple
                 previous = CellType.Default;
                 for (int j = 0; j < size - 1; j++)
                 {
-                    if (cells[i][j + 1].Type == previous)
+                    if (cells[i][j + 1].Type == previous && previous != CellType.Default)
                     {
                         count = 2;
                     }
@@ -102,7 +102,7 @@ namespace DormGrapple
                 previous = CellType.Default;
                 for (int j = 0; j < size - 1; j++)
                 {
-                    if (cells[j + 1][i].Type == previous)
+                    if (cells[j + 1][i].Type == previous && previous != CellType.Default)
                     {
                         count = 2;
                     }
@@ -134,7 +134,7 @@ namespace DormGrapple
                 CellType previous = CellType.Default;
                 for (int j = 0; j < size; j++)
                 {
-                    if (cells[i][j].Type == previous)
+                    if (cells[i][j].Type == previous && previous != CellType.Default)
                     {
                         count = 2;
                     }
@@ -218,7 +218,7 @@ namespace DormGrapple
                 previous = CellType.Default;
                 for (int j = 0; j < size; j++)
                 {
-                    if (cells[j][i].Type == previous)
+                    if (cells[j][i].Type == previous && previous != CellType.Default)
                     {
                         count = 2;
                     }
@@ -303,7 +303,7 @@ namespace DormGrapple
                 previous = CellType.Default;
                 for (int j = 0; j < size - 1; j++)
                 {
-                    if (cells[i][j + 1].Type == previous)
+                    if (cells[i][j + 1].Type == previous && previous != CellType.Default)
                     {
                         count = 2;
                     }
@@ -341,7 +341,7 @@ namespace DormGrapple
                 previous = CellType.Default;
                 for (int j = 0; j < size - 1; j++)
                 {
-                    if (cells[j + 1][i].Type == previous)
+                    if (cells[j + 1][i].Type == previous && previous != CellType.Default)
                     {
                         count = 2;
                     }
@@ -397,7 +397,7 @@ namespace DormGrapple
                     while (++index < size && previous == cells[index][j].Type)
                     {
                         count++;
-                        if (count > 2)
+                        if (count > 2 && previous != CellType.Default)
                         {
                             return true;
                         }
@@ -409,7 +409,7 @@ namespace DormGrapple
                     while (--index > -1 && previous == cells[index][j].Type)
                     {
                         count++;
-                        if (count > 2)
+                        if (count > 2 && previous != CellType.Default)
                         {
                             return true;
                         }
@@ -421,7 +421,7 @@ namespace DormGrapple
                     while (++index < size && previous == cells[i][index].Type)
                     {
                         count++;
-                        if (count > 2)
+                        if (count > 2 && previous != CellType.Default)
                         {
                             return true;
                         }
@@ -433,7 +433,7 @@ namespace DormGrapple
                     while (--index > -1 && previous == cells[i][index].Type)
                     {
                         count++;
-                        if (count > 2)
+                        if (count > 2 && previous != CellType.Default)
                         {
                             return true;
                         }
@@ -463,7 +463,7 @@ namespace DormGrapple
                     currCombination = new Combination();
                     currCombination.combination.Add(new Position(i, j));
 
-                    while (++index < size && previous == cells[index][j].Type)
+                    while (++index < size && previous == cells[index][j].Type && previous != CellType.Default)
                     {
                         currCombination.combination.Add(new Position(index, j));
                         count++;
@@ -480,7 +480,7 @@ namespace DormGrapple
                     currCombination = new Combination();
                     currCombination.combination.Add(new Position(i, j));
 
-                    while (--index > -1 && previous == cells[index][j].Type)
+                    while (--index > -1 && previous == cells[index][j].Type && previous != CellType.Default)
                     {
                         currCombination.combination.Add(new Position(index, j));
                         count++;
@@ -497,7 +497,7 @@ namespace DormGrapple
                     currCombination = new Combination();
                     currCombination.combination.Add(new Position(i, j));
 
-                    while (++index < size && previous == cells[i][index].Type)
+                    while (++index < size && previous == cells[i][index].Type && previous != CellType.Default)
                     {
                         currCombination.combination.Add(new Position(i, index));
                         count++;
@@ -514,7 +514,7 @@ namespace DormGrapple
                     currCombination = new Combination();
                     currCombination.combination.Add(new Position(i, j));
 
-                    while (--index > -1 && previous == cells[i][index].Type)
+                    while (--index > -1 && previous == cells[i][index].Type && previous != CellType.Default)
                     {
                         currCombination.combination.Add(new Position(i, index));
                         count++;
@@ -558,6 +558,47 @@ namespace DormGrapple
             }
 
             return combinations;
+        }
+
+        public static Dictionary<Owner, double> Remove(List<List<ICell>> cells, Owner owner)
+        {
+            var allCombo = Analytics.AllCombinations(cells);
+            
+            var deleteList = new List<Position>();
+            var damageDict = new Dictionary<Owner, double>();
+
+            foreach (var combo in allCombo)
+            {
+                if (!damageDict.ContainsKey(cells[combo.combination[0].Row][combo.combination[0].Column].Owner))
+                    damageDict[cells[combo.combination[0].Row][combo.combination[0].Column].Owner] = 0;
+                if (owner != cells[combo.combination[0].Row][combo.combination[0].Column].Owner)
+                {
+                    damageDict[cells[combo.combination[0].Row][combo.combination[0].Column].Owner]
+                        += combo.Length * cells[combo.combination[0].Row][combo.combination[0].Column].Damage;
+                }
+                else
+                {
+                    damageDict[cells[combo.combination[0].Row][combo.combination[0].Column].Owner] +=
+                        (combo.Length * cells[combo.combination[0].Row][combo.combination[0].Column].Damage / 2.0);
+                }
+
+                deleteList.AddRange(combo.combination);
+            }
+
+            deleteList.Sort();
+
+            foreach (var deletePosition in deleteList)
+            {
+                for (var rowIndex = deletePosition.Row; rowIndex > 0; rowIndex--)
+                {
+                    cells[rowIndex][deletePosition.Column] = cells[rowIndex - 1][deletePosition.Column];
+                }
+
+                cells[0][deletePosition.Column] =
+                    new Cell();
+            }
+
+            return damageDict;
         }
     }
 }

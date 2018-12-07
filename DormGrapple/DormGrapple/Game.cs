@@ -54,7 +54,7 @@ namespace DormGrapple
                 Console.WriteLine("Player2: " + player2.CurrentHealth + "/" + player2.MaxHealth);
 
                 Console.WriteLine("\nPress any key for next move...");
-                Console.ReadKey();
+                //Console.ReadKey();
             }
         }
     }
