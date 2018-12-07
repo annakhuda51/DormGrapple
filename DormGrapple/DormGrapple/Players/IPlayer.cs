@@ -11,6 +11,6 @@ namespace DormGrapple
         Tuple<Position, Position> Move(List<List<ICell>> cells);
         double CurrentHealth { get; set; }
         double MaxHealth { get; set; }
-        Owner Owner { get; set; }
+        Owner Enemy { get; set; }
     }
 }

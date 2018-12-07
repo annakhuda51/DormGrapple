@@ -27,9 +27,10 @@ namespace DormGrapple
                 Console.WriteLine();
 
                 var positions = player1.Move(field.Cells);
-                var damageDict = field.Move(positions.Item1, positions.Item2, player1.Owner);
-                player2.CurrentHealth -= damageDict.ContainsKey(player1.Owner) ? damageDict[player1.Owner] : 0;
-                player1.CurrentHealth -= damageDict.ContainsKey(player2.Owner) ? damageDict[player2.Owner] : 0;
+                Console.WriteLine((positions.Item1.Row +1)+ ", " + (positions.Item1.Column + 1) + "; " + (positions.Item2.Row + 1) + ", " + (positions.Item2.Column + 1));
+                var damageDict = field.Move(positions.Item1, positions.Item2, player2.Enemy);
+                player1.CurrentHealth -= damageDict.ContainsKey(player1.Enemy) ? damageDict[player1.Enemy] : 0;
+                player2.CurrentHealth -= damageDict.ContainsKey(player2.Enemy) ? damageDict[player2.Enemy] : 0;
                 if (player1.CurrentHealth <= 0)
                     return player2;
                 if (player2.CurrentHealth <= 0)
@@ -41,9 +42,10 @@ namespace DormGrapple
                 Console.WriteLine();
 
                 positions = player2.Move(field.Cells);
-                damageDict = field.Move(positions.Item1, positions.Item2, player2.Owner);
-                player2.CurrentHealth -= damageDict.ContainsKey(player1.Owner) ? damageDict[player1.Owner] : 0;
-                player1.CurrentHealth -= damageDict.ContainsKey(player2.Owner) ? damageDict[player2.Owner] : 0;
+                Console.WriteLine((positions.Item1.Row + 1) + ", " + (positions.Item1.Column + 1) + "; " + (positions.Item2.Row + 1) + ", " + (positions.Item2.Column + 1));
+                damageDict = field.Move(positions.Item1, positions.Item2, player1.Enemy);
+                player1.CurrentHealth -= damageDict.ContainsKey(player1.Enemy) ? damageDict[player1.Enemy] : 0;
+                player2.CurrentHealth -= damageDict.ContainsKey(player2.Enemy) ? damageDict[player2.Enemy] : 0;
                 if (player1.CurrentHealth <= 0)
                     return player2;
                 if (player2.CurrentHealth <= 0)
